@@ -74,6 +74,7 @@ public class Main : MonoBehaviour {
     private void OnSpinValuesReceived(string err, SpinnerData data) {
         _spinnerValues = data.SpinnerValues;
 
+        _gameplayUI.Reset(_spinnerValues);
         _gameplayUI.Show();
         _loadingUI.Hide();
     }
