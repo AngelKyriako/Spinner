@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -17,6 +18,15 @@ public class Main : MonoBehaviour {
         Verb = UnityWebRequest.kHttpVerbPOST
     };
 
+    [Header("Networking: VirtualServer")]
+    [Tooltip("When enabled, the UI will consume the current spinner values and the last result of the history. Both of those can be edited via the Runtime section.")]
+    [SerializeField] private bool _virtualServerEnabled = false;
+    [SerializeField] private float _virtualServerDelayInSeconds = 2f;
+    [SerializeField] private SpinnerData _virtualServerResult = new SpinnerData {
+        SpinnerValue = 100,
+        SpinnerValues = new int[] { 100, 500, 1000, 10000, 50000, 100000 }
+    };
+
     private IPostman _postman;
 
     [Header("UI")]
@@ -25,7 +35,7 @@ public class Main : MonoBehaviour {
 
     [Header("Runtime")]
     [SerializeField] private int[] _spinnerValues;
-    [SerializeField] private List<string> _spinnerResultHistory = new List<string>();
+    [SerializeField] private List<string> _spinnerResultHistory;
 
     private void Awake() {
         Debug.Assert(_loadingUI != null, "_loadingUI should not be null.");
@@ -39,28 +49,58 @@ public class Main : MonoBehaviour {
         _gameplayUI.Initialize();
 
         _loadingUI.Show();
-        _postman.Send(_serverRouteGetSpinnerValues, (string err, SpinnerData data) => {
-            _spinnerValues = data.SpinnerValues;
 
-            _gameplayUI.Show();
-            _loadingUI.Hide();
-        });
+        if (!_virtualServerEnabled) {
+            _postman.Send<SpinnerData>(_serverRouteGetSpinnerValues, OnSpinValuesReceived);
+        }
+        else {
+            CallbackAfterSeconds(_virtualServerDelayInSeconds, () => OnSpinValuesReceived(null, _virtualServerResult));
+        }
+
+        _spinnerResultHistory = new List<string>(100);
     }
 
     private void Spin() {
         _gameplayUI.StartSpinAnimation();
 
-        _postman.Send(_serverRouteGetSpinnerSpin, (string err, SpinnerData data) => {
-            if (!string.IsNullOrEmpty(err)) {
-                _gameplayUI.StopSpinAnimationWithError(err);
+        if (!_virtualServerEnabled) {
+            _postman.Send<SpinnerData>(_serverRouteGetSpinnerSpin, OnSpinResultReceived);
+        }
+        else {
+            CallbackAfterSeconds(_virtualServerDelayInSeconds, () => OnSpinResultReceived(null, _virtualServerResult));
+        }
+    }
 
-                _spinnerResultHistory.Add(err);
-            }
-            else {
-                _gameplayUI.StopSpinAnimationWithResult(data.SpinnerValue);
+    private void OnSpinValuesReceived(string err, SpinnerData data) {
+        _spinnerValues = data.SpinnerValues;
 
-                _spinnerResultHistory.Add(data.SpinnerValue.ToString());
-            }
-        });
+        _gameplayUI.Show();
+        _loadingUI.Hide();
+    }
+
+    private void OnSpinResultReceived(string err, SpinnerData data) {
+        if (_spinnerResultHistory.Count == _spinnerResultHistory.Capacity) {
+            _spinnerResultHistory.RemoveAt(0);
+        }
+
+        if (string.IsNullOrEmpty(err)) {
+            _spinnerResultHistory.Add(data.SpinnerValue.ToString());
+
+            _gameplayUI.StopSpinAnimationAtValue(data.SpinnerValue);
+        } else {
+            _spinnerResultHistory.Add(err);
+
+            _gameplayUI.StopSpinAnimationWithError(err);
+        }
+    }
+
+    private void CallbackAfterSeconds(float seconds, Action onDone) {
+        StartCoroutine(CallbackAfterSecondsRoutine(seconds, onDone));
+    }
+
+    private IEnumerator CallbackAfterSecondsRoutine(float seconds, Action onDone) {
+        yield return new WaitForSecondsRealtime(seconds);
+
+        onDone();
     }
 }

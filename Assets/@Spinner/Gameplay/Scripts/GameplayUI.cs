@@ -56,7 +56,7 @@ public class GameplayUI : CanvasHideableUI {
         // TODO: disable script when done
     }
 
-    public void StopSpinAnimationWithResult(int value) {
+    public void StopSpinAnimationAtValue(int value) {
         
     }
 
