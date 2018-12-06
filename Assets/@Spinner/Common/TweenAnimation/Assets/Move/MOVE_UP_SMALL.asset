@@ -14,4 +14,4 @@ MonoBehaviour:
   _durationInSeconds: 2
   _ease: 0
   _fromLocalPosition: {x: 0, y: 0, z: 0}
-  _untilLocaPosition: {x: 0, y: 1, z: 0}
+  _untilLocaPosition: {x: 0, y: 20, z: 0}

@@ -22,18 +22,14 @@ public class CanvasGroupHideableUI : MonoBehaviour, IHideableUI {
     public virtual bool IsShowing { get { return _canvasGroup.alpha != 0; } }
 
     public virtual void Show(Action onDone = null) {
-        Action onDoneInternal = () => {
-            _canvasGroup.alpha = 1;
-            _canvasGroup.blocksRaycasts = true;
-
-            onDone?.Invoke();
-        };
+        _canvasGroup.alpha = 1;
+        _canvasGroup.blocksRaycasts = true;
 
         if (_showAnimation != null) {
-            _showAnimation.Animate(this, _canvasGroup, onDoneInternal);
+            _showAnimation.Animate(this, _canvasGroup, onDone);
         }
         else {
-            onDoneInternal();
+            onDone?.Invoke();
         }
     }
 

@@ -189,17 +189,20 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
             spinDriver.StopAnimation();
         }
 
-        _spinEndedAnimation.Animate(this, _canvasGroup, () => {
-            _isFrozenIndicator.Show();
+        popupUI.SetTextAndShow(textToDisplay, () => {
 
-            popupUI.SetTextAndShow(textToDisplay, () => {
+            popupUI.Hide(() => {
 
-                popupUI.Hide(() => {
+                _spinEndedAnimation.Animate(this, _canvasGroup, () => {
 
-                    _state = State.Waiting;
-                    _actionButtonContainer.Show();
+                    _isFrozenIndicator.Show(() => {
 
+                        _actionButtonContainer.Show(() => {
+                            _state = State.Waiting;
+                        });
+                    });
                 });
+
             });
         });
     }

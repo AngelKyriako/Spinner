@@ -8,10 +8,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d215e079eb63d54a99383a19aa05004, type: 3}
-  m_Name: MOVE_DOWN_SMALL
+  m_Script: {fileID: 11500000, guid: ae938a2d1cce7f64ab46cc6d0e7b512b, type: 3}
+  m_Name: SCALE_DOWN_LARGE
   m_EditorClassIdentifier: 
-  _durationInSeconds: 2
+  _durationInSeconds: 0
   _ease: 0
-  _fromLocalPosition: {x: 0, y: 0, z: 0}
-  _untilLocaPosition: {x: 0, y: -20, z: 0}
+  _fromLocalScale: {x: 2, y: 2, z: 2}
+  _untilLocalScale: {x: 1, y: 1, z: 1}
