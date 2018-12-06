@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
 
-public class CanvasHideableUI : MonoBehaviour {
+using UnityEngine;
+
+[RequireComponent(typeof(Canvas))]
+public class CanvasHideableUI : MonoBehaviour, IHideableUI {
 
     [SerializeField] private Canvas _canvas;
 
@@ -15,11 +18,15 @@ public class CanvasHideableUI : MonoBehaviour {
 
     public virtual bool IsShowing { get { return _canvas.enabled; } }
 
-    public virtual void Show() {
+    public virtual void Show(Action onDone = null) {
         _canvas.enabled = true;
+
+        onDone?.Invoke();
     }
 
-    public virtual void Hide() {
+    public virtual void Hide(Action onDone = null) {
         _canvas.enabled = false;
+
+        onDone?.Invoke();
     }
 }
