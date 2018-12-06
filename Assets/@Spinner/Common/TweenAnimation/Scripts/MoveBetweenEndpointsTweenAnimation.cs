@@ -9,7 +9,7 @@ public class MoveBetweenEndpointsTweenAnimation : AbstractTweenAnimation {
     [SerializeField] private Vector3 _untilLocaPosition;
 
     protected override Tweener FireAnimation(Transform transform) {
-        transform.position = _fromLocalPosition;
+        transform.localPosition = _fromLocalPosition;
 
         return transform.DOLocalMove(_untilLocaPosition, _durationInSeconds);
     }
