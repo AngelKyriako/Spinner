@@ -184,23 +184,21 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
 
         yield return new WaitUntil(() => _state == State.SpinningEnded);
 
-
         foreach (SpinnerDriverUI spinDriver in _drivers) {
             spinDriver.StopAnimation();
         }
+
+        _spinEndedAnimation.Animate(this, _canvasGroup, () => {
+
+            _isFrozenIndicator.Show();
+        });
 
         popupUI.SetTextAndShow(textToDisplay, () => {
 
             popupUI.Hide(() => {
 
-                _spinEndedAnimation.Animate(this, _canvasGroup, () => {
-
-                    _isFrozenIndicator.Show(() => {
-
-                        _actionButtonContainer.Show(() => {
-                            _state = State.Waiting;
-                        });
-                    });
+                _actionButtonContainer.Show(() => {
+                    _state = State.Waiting;
                 });
 
             });
@@ -265,7 +263,6 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
                     _state
                 ));
         }
-
     }
 
     private void TryStepDownItemTexts() {
