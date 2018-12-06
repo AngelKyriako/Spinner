@@ -13,4 +13,8 @@ public class ScaleBetweenEndpointsTweenAnimation : AbstractTweenAnimation {
 
         return transform.DOScale(_untilLocalScale, _durationInSeconds);
     }
+
+    protected override Tweener FireAnimation(CanvasGroup canvasGroup) {
+        return FireAnimation(canvasGroup.transform);
+    }
 }

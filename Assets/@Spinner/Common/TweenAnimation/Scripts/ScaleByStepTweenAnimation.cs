@@ -10,4 +10,8 @@ public class ScaleByStepTweenAnimation : AbstractTweenAnimation {
     protected override Tweener FireAnimation(Transform transform) {
         return transform.DOBlendableScaleBy(_step, _durationInSeconds);
     }
+
+    protected override Tweener FireAnimation(CanvasGroup canvasGroup) {
+        return FireAnimation(canvasGroup.transform);
+    }
 }

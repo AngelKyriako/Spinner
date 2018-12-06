@@ -5,7 +5,7 @@ using UnityEngine;
 
 using DG.Tweening;
 
-public abstract class AbstractTweenAnimation : ScriptableObject {
+public abstract class AbstractTweenAnimation : ScriptableObject, ITweenAnimation {
 
     [SerializeField] protected float _durationInSeconds;
     [SerializeField] private Ease _ease = Ease.Unset;
@@ -18,12 +18,12 @@ public abstract class AbstractTweenAnimation : ScriptableObject {
         throw new InvalidOperationException(string.Format("Transform Animation not supported by {0}.", name));
     }
 
-    public void Animate(MonoBehaviour behaviour, Action onDone) {
-        behaviour.StartCoroutine(AnimationRoutine(FireAnimation(behaviour.transform), onDone));
+    public void Animate(MonoBehaviour routineInvocator, Transform transform, Action onDone = null) {
+        routineInvocator.StartCoroutine(AnimationRoutine(FireAnimation(transform), onDone));
     }
 
-    public void Animate(MonoBehaviour behaviour, CanvasGroup canvasGroup, Action onDone) {
-        behaviour.StartCoroutine(AnimationRoutine(FireAnimation(canvasGroup), onDone));
+    public void Animate(MonoBehaviour routineInvocator, CanvasGroup canvasGroup, Action onDone = null) {
+        routineInvocator.StartCoroutine(AnimationRoutine(FireAnimation(canvasGroup), onDone));
     }
 
     private IEnumerator AnimationRoutine(Tweener tweener, Action onDone) {

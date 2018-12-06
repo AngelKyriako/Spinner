@@ -14,4 +14,8 @@ public class MoveBetweenEndpointsTweenAnimation : AbstractTweenAnimation {
         return transform.DOLocalMove(_untilLocaPosition, _durationInSeconds);
     }
 
+    protected override Tweener FireAnimation(CanvasGroup canvasGroup) {
+        return FireAnimation(canvasGroup.transform);
+    }
+
 }
