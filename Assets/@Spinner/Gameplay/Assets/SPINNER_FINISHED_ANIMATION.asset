@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Name: SPINNER_FINISHED_ANIMATION
   m_EditorClassIdentifier: 
   _type: 0
-  _tweenAnimations: []
+  _tweenAnimations:
+  - {fileID: 11400000, guid: 1997dab7bc8ef214c8192c57c23e887a, type: 2}
