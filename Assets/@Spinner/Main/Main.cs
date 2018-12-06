@@ -22,6 +22,7 @@ public class Main : MonoBehaviour {
     [Tooltip("When enabled, the UI will consume the current spinner values and the last result of the history. Both of those can be edited via the Runtime section.")]
     [SerializeField] private bool _virtualServerEnabled = false;
     [SerializeField] private float _virtualServerDelayInSeconds = 2f;
+    [SerializeField] private string _virtualServerError;
     [SerializeField] private SpinnerData _virtualServerResult = new SpinnerData {
         SpinnerValue = 100,
         SpinnerValues = new int[] { 100, 500, 1000, 10000, 50000, 100000 }
@@ -32,6 +33,7 @@ public class Main : MonoBehaviour {
     [Header("UI")]
     [SerializeField] private CanvasHideableUI _loadingUI;
     [SerializeField] private GameplayUI _gameplayUI;
+    [SerializeField] private PopupTextUI _errorPopupUI;
 
     [Header("Runtime")]
     [SerializeField] private int[] _spinnerValues;
@@ -40,13 +42,16 @@ public class Main : MonoBehaviour {
     private void Awake() {
         Debug.Assert(_loadingUI != null, "_loadingUI should not be null.");
         Debug.Assert(_gameplayUI != null, "_gameplayUI should not be null.");
+        Debug.Assert(_errorPopupUI != null, "_errorPopupUI should not be null.");
 
-        _postman = new UnityPostman(this, new Uri(_serverUrl), new Logger(Debug.unityLogger.logHandler), new JsonSerializer());
+        _postman = new UnityPostman(this, _serverUrl, new Logger(Debug.unityLogger.logHandler), new JsonSerializer());
 
         _loadingUI.Initialize();
 
-        _gameplayUI.OnSpinAction += Spin;
-        _gameplayUI.Initialize();
+        _gameplayUI.Initialize(_errorPopupUI);
+        _gameplayUI.Spinner.OnSpinAction += Spin;
+
+        _errorPopupUI.Initialize();
 
         _loadingUI.Show();
 
@@ -54,29 +59,35 @@ public class Main : MonoBehaviour {
             _postman.Send<SpinnerData>(_serverRouteGetSpinnerValues, OnSpinValuesReceived);
         }
         else {
-            CallbackAfterSeconds(_virtualServerDelayInSeconds, () => OnSpinValuesReceived(null, _virtualServerResult));
+            CallbackAfterSeconds(_virtualServerDelayInSeconds, () => OnSpinValuesReceived(_virtualServerError, _virtualServerResult));
         }
 
         _spinnerResultHistory = new List<string>(100);
     }
 
     private void Spin() {
-        _gameplayUI.StartSpinAnimation();
+        _gameplayUI.Spinner.StartSpinAnimation();
 
         if (!_virtualServerEnabled) {
             _postman.Send<SpinnerData>(_serverRouteGetSpinnerSpin, OnSpinResultReceived);
         }
         else {
-            CallbackAfterSeconds(_virtualServerDelayInSeconds, () => OnSpinResultReceived(null, _virtualServerResult));
+            CallbackAfterSeconds(_virtualServerDelayInSeconds, () => OnSpinResultReceived(_virtualServerError, _virtualServerResult));
         }
     }
 
     private void OnSpinValuesReceived(string err, SpinnerData data) {
-        _spinnerValues = data.SpinnerValues;
+        if (string.IsNullOrEmpty(err)) {
+            _spinnerValues = data.SpinnerValues;
 
-        _gameplayUI.Reset(_spinnerValues);
-        _gameplayUI.Show();
-        _loadingUI.Hide();
+            _loadingUI.Hide();
+
+            _gameplayUI.Spinner.Reset(_spinnerValues);
+            _gameplayUI.Show();
+        }
+        else {
+            _errorPopupUI.SetTextAndShow(err);
+        }
     }
 
     private void OnSpinResultReceived(string err, SpinnerData data) {
@@ -87,11 +98,11 @@ public class Main : MonoBehaviour {
         if (string.IsNullOrEmpty(err)) {
             _spinnerResultHistory.Add(data.SpinnerValue.ToString());
 
-            _gameplayUI.StopSpinAnimationAtValue(data.SpinnerValue);
+            _gameplayUI.Spinner.StopSpinAnimationAtValue(data.SpinnerValue);
         } else {
             _spinnerResultHistory.Add(err);
 
-            _gameplayUI.StopSpinAnimationWithError(err);
+            _gameplayUI.Spinner.StopSpinAnimationWithError(err);
         }
     }
 
