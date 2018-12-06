@@ -25,6 +25,9 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
 
     public event Action OnSpinAction;
 
+    [SerializeField] private TweenAnimationGroup _spinStartedAnimation;
+    [SerializeField] private TweenAnimationGroup _spinEndedAnimation;
+
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI[] _itemTexts;
     [SerializeField] private CanvasGroupHideableUI _isFrozenIndicator;
@@ -134,6 +137,8 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
             State.Waiting, _state
         );
 
+        _spinStartedAnimation.Animate(this, _canvasGroup);
+
         _isFrozenIndicator.Hide();
         _actionButtonContainer.Hide();
 
@@ -179,19 +184,22 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
 
         yield return new WaitUntil(() => _state == State.SpinningEnded);
 
-        _isFrozenIndicator.Show();
 
         foreach (SpinnerDriverUI spinDriver in _drivers) {
             spinDriver.StopAnimation();
         }
 
-        popupUI.SetTextAndShow(textToDisplay, () => {
+        _spinEndedAnimation.Animate(this, _canvasGroup, () => {
+            _isFrozenIndicator.Show();
 
-            popupUI.Hide(() => {
+            popupUI.SetTextAndShow(textToDisplay, () => {
 
-                _state = State.Waiting;
-                _actionButtonContainer.Show();
+                popupUI.Hide(() => {
 
+                    _state = State.Waiting;
+                    _actionButtonContainer.Show();
+
+                });
             });
         });
     }
