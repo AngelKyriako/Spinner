@@ -197,8 +197,9 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
 
             popupUI.Hide(() => {
 
+                _state = State.Waiting;
                 _actionButtonContainer.Show(() => {
-                    _state = State.Waiting;
+                    //_state = State.Waiting;
                 });
 
             });

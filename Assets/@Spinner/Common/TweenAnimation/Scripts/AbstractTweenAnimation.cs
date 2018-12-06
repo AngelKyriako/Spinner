@@ -18,11 +18,11 @@ public abstract class AbstractTweenAnimation : ScriptableObject, ITweenAnimation
         throw new InvalidOperationException(string.Format("Transform Animation not supported by {0}.", name));
     }
 
-    public void Animate(MonoBehaviour routineInvocator, Transform transform, Action onDone = null) {
+    public virtual void Animate(MonoBehaviour routineInvocator, Transform transform, Action onDone = null) {
         routineInvocator.StartCoroutine(AnimationRoutine(FireAnimation(transform), onDone));
     }
 
-    public void Animate(MonoBehaviour routineInvocator, CanvasGroup canvasGroup, Action onDone = null) {
+    public virtual void Animate(MonoBehaviour routineInvocator, CanvasGroup canvasGroup, Action onDone = null) {
         routineInvocator.StartCoroutine(AnimationRoutine(FireAnimation(canvasGroup), onDone));
     }
 
