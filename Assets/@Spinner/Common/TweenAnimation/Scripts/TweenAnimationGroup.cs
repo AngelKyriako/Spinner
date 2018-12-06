@@ -13,12 +13,12 @@ public class TweenAnimationGroup : ScriptableObject, ITweenAnimation {
     [SerializeField] private Type _type;
     [SerializeField] private AbstractTweenAnimation[] _tweenAnimations;
 
-    public void Animate(MonoBehaviour routineInvoker, CanvasGroup canvasGroup, Action onDone) {
-        
+    public void Animate(MonoBehaviour routineInvoker, CanvasGroup canvasGroup, Action onDone = null) {
+        Animate(routineInvoker, null, canvasGroup, onDone);
     }
 
-    public void Animate(MonoBehaviour routineInvoker, Transform transform, Action onDone) {
-
+    public void Animate(MonoBehaviour routineInvoker, Transform transform, Action onDone = null) {
+        Animate(routineInvoker, transform, null, onDone);
     }
 
     private void Animate(MonoBehaviour routineInvoker, Transform transform, CanvasGroup canvasGroup, Action onDone) {

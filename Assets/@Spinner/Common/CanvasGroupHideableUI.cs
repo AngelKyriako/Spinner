@@ -5,7 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(CanvasGroup))]
 public class CanvasGroupHideableUI : MonoBehaviour, IHideableUI {
 
-    [SerializeField] private CanvasGroup _canvasGroup;
+    [SerializeField] protected CanvasGroup _canvasGroup;
+
+    [SerializeField] private TweenAnimationGroup _showAnimation;
+    [SerializeField] private TweenAnimationGroup _hideAnimation;
 
     public virtual void Initialize() {
         if (_canvasGroup == null) {
@@ -19,16 +22,32 @@ public class CanvasGroupHideableUI : MonoBehaviour, IHideableUI {
     public virtual bool IsShowing { get { return _canvasGroup.alpha != 0; } }
 
     public virtual void Show(Action onDone = null) {
-        _canvasGroup.alpha = 1;
-        _canvasGroup.blocksRaycasts = true;
+        Action onDoneInternal = () => {
+            _canvasGroup.alpha = 1;
+            _canvasGroup.blocksRaycasts = true;
 
-        onDone?.Invoke();
+            onDone?.Invoke();
+        };
+
+        if (_showAnimation != null) {
+            _showAnimation.Animate(this, _canvasGroup, onDoneInternal);
+        }
+        else {
+            onDoneInternal();
+        }
     }
 
     public virtual void Hide(Action onDone = null) {
-        HideInternal();
+        Action onDoneInternal = () => {
+            HideInternal();
+            onDone?.Invoke();
+        };
 
-        onDone?.Invoke();
+        if (_hideAnimation != null) {
+            _hideAnimation.Animate(this, _canvasGroup, onDoneInternal);
+        } else {
+            onDoneInternal();
+        }
     }
 
     private void HideInternal() {
