@@ -24,11 +24,14 @@ public class UnityPostman : IPostman {
 
     private MonoBehaviour _routineInvocator;
 
-    public UnityPostman(MonoBehaviour routineInvocator, Uri serverUrl, ILogger logger, ISerializer serializer, int defaultTimeoutInSeconds = 10) {
+    public UnityPostman(MonoBehaviour routineInvocator, string serverUrl, ILogger logger, ISerializer serializer, int defaultTimeoutInSeconds = 10) {
         _routineInvocator = routineInvocator;
         _logger = logger;
         _serializer = serializer;
-        _serverUrl = serverUrl.ToString();
+        _serverUrl = serverUrl;
+        if (!_serverUrl.EndsWith("/")) {
+            _serverUrl += "/";
+        }
         _timeoutInSeconds = defaultTimeoutInSeconds;
     }
 
@@ -139,12 +142,18 @@ public class UnityPostman : IPostman {
         // REGION Request
         UnityWebRequest req = new UnityWebRequest();
 
+        if (!route.StartsWith("/")) {
+            route = "/" + route;
+        }
+
         string reqBodyJson = reqBody != null ? _serializer.Serialize(reqBody) : string.Empty;
-        _logger.LogFormat(LogType.Log, "Sending {0} at {1} with payload: {2}", method, route, reqBodyJson.Length > 0 ? reqBodyJson : "NONE");
 
         OnRequestSent?.Invoke(method, route);
 
-        req.url = Path.Combine(_serverUrl, route);
+        req.url = _serverUrl + route;
+
+        _logger.LogFormat(LogType.Log, "Sending {0} at {1} with payload: {2}", method, req.url, reqBodyJson.Length > 0 ? reqBodyJson : "NONE");
+
         req.method = method;
         if (reqBodyJson.Length > 0) {
             byte[] reqBodyBytes = new System.Text.UTF8Encoding().GetBytes(reqBodyJson);
