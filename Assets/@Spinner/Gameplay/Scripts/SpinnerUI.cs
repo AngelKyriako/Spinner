@@ -189,9 +189,9 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
         }
 
         _spinEndedAnimation.Animate(this, _canvasGroup, () => {
-
-            _isFrozenIndicator.Show();
+            //_isFrozenIndicator.Show();
         });
+        _isFrozenIndicator.Show();
 
         popupUI.SetTextAndShow(textToDisplay, () => {
 
