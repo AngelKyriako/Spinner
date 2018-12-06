@@ -9,9 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b9da4c61e931a74a98ceeb13468ab27, type: 3}
-  m_Name: SPINNER_POPUP_RESULT_SHOW_ANIMATION
+  m_Name: SPINNER_ACTION_SHOW_ANIMATION
   m_EditorClassIdentifier: 
   _type: 0
   _tweenAnimations:
-  - {fileID: 11400000, guid: 068e510a1178b5a4ca58db0a75053900, type: 2}
-  - {fileID: 11400000, guid: da1d06f606733c340836ad92dd8476a2, type: 2}
+  - {fileID: 11400000, guid: d8143fc49ef72f84d9959ea402577c5e, type: 2}
