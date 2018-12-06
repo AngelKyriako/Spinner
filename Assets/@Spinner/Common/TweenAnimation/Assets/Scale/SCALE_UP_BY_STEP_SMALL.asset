@@ -11,6 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ea389ff0205494894ddb1d2dcf82ad, type: 3}
   m_Name: SCALE_UP_BY_STEP_SMALL
   m_EditorClassIdentifier: 
-  _durationInSeconds: 2
+  _durationInSeconds: 1
   _ease: 0
   _step: {x: 0.1, y: 0.1, z: 0.1}

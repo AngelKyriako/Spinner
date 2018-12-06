@@ -13,5 +13,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 0
   _tweenAnimations:
-  - {fileID: 11400000, guid: 1997dab7bc8ef214c8192c57c23e887a, type: 2}
+  - {fileID: 11400000, guid: 068e510a1178b5a4ca58db0a75053900, type: 2}
   - {fileID: 11400000, guid: da1d06f606733c340836ad92dd8476a2, type: 2}

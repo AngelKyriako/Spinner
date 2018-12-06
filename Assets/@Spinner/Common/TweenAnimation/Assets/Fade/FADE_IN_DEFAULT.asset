@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15d5f71383ef2254e94ef59180713041, type: 3}
   m_Name: FADE_IN_DEFAULT
   m_EditorClassIdentifier: 
-  _durationInSeconds: 2
+  _durationInSeconds: 1
   _ease: 0
   _fromAlpha: 0
   _untilAlpha: 1
