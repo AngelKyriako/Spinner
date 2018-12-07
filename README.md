@@ -2,6 +2,13 @@
 
 A simple spinner UI application made in Unity3D.
 
+## Screenshots
+
+![Idle State](Screenshots/IdleState.JPG)
+![Spin Started State](Screenshots/SpinStartedState.JPG)
+![Spin Stopping State](Screenshots/SpinStoppingState.JPG)
+![Spin Stopped State](Screenshots/SpinStoppedState.JPG)
+
 ## Features
 
 - A simple HTTP client.
