@@ -37,6 +37,10 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
     [SerializeField] private PopupTextUI _actionResultPopupUI;
     private PopupTextUI _errorPopupUI;
 
+    [Header("VFX")]
+    [SerializeField] private int _GoodResultVFXPointsThreshold = 10000;
+    [SerializeField] private ParticleSystem _GoodResultVFX;
+
     [Header("Settings")]
     [SerializeField, Range(MIN_SPEED, MAX_SPEED)] private float _accelerationStartSpeed = MIN_SPEED;
     [SerializeField, Range(MIN_SPEED, MAX_SPEED)] private float _accelerationEndSpeed = MAX_SPEED;
@@ -161,14 +165,18 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
     public void StopSpinAnimationAtValue(int value) {
         _itemResult = value;
 
-        StartCoroutine(StopSpinAnimationRoutine(_actionResultPopupUI, value.ToString()));
+        StartCoroutine(StopSpinAnimationRoutine(
+            _actionResultPopupUI,
+            value.ToString(),
+            value >= _GoodResultVFXPointsThreshold ? _GoodResultVFX : null
+        ));
     }
 
     public void StopSpinAnimationWithError(string error) {
         StartCoroutine(StopSpinAnimationRoutine(_errorPopupUI, error));
     }
 
-    private IEnumerator StopSpinAnimationRoutine(PopupTextUI popupUI, string textToDisplay) {
+    private IEnumerator StopSpinAnimationRoutine(PopupTextUI popupUI, string textToDisplay, ParticleSystem vfxToDisplay = null) {
         Debug.AssertFormat(
             _state == State.SpinningStarted || _state == State.SpinningAtMaxSpeed,
             "_state should be either at {0} or {1} instead of {2} to stop spinning animation.",
@@ -193,6 +201,9 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
         });
         _isFrozenIndicator.Show();
 
+        if (vfxToDisplay != null) {
+            vfxToDisplay.Play();
+        }
         popupUI.SetTextAndShow(textToDisplay, () => {
 
             popupUI.Hide(() => {
