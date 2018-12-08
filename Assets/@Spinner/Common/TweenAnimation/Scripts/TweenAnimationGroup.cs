@@ -14,12 +14,6 @@ public class TweenAnimationGroup : ScriptableObject, ITweenAnimation {
 
     [SerializeField] private AbstractTweenAnimation[] _tweenAnimations;
 
-    // IFDO: add a list of children TweenAnimationGroups to support animations like:
-    //   run 2 animations in series
-    //   then 2 animations in parallel
-    //   then 3 animations in series
-    //   .etc
-
     public void Animate(MonoBehaviour routineInvoker, CanvasGroup canvasGroup, Action onDone = null) {
         Animate(routineInvoker, null, canvasGroup, onDone);
     }
