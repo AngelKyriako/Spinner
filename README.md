@@ -2,6 +2,8 @@
 
 A simple spinner UI application made in Unity3D.
 
+Checkout the WebGL(wasm) demo [here](https://angelkyriako.github.io/Spinner).
+
 ## Screenshots
 
 ![Idle State](Screenshots/IdleState.JPG)
