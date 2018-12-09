@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UI;
 
 using TMPro;
 
+/// <summary>
+/// IFDO: We could update visuals and VFX, based on _currentSpeed and min/max acceleration/deceleration speeds.
+/// IFDO: A State/Strategy pattern would cleanup the code a lot.
+/// IFDO: Abstracting out VFX and animation sequence related code to other components should help to.
+/// </summary>
 public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
 
     private enum State {
@@ -15,6 +21,11 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
         SpinningEnding,
         SpinningAtMinSpeedToCenterResult,
         SpinningEnded
+    }
+
+    private enum SpinAnimation {
+        Discrete,
+        continuous
     }
 
     private const float MIN_SPEED = .1f;
@@ -35,19 +46,29 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
     [SerializeField] private CanvasGroupHideableUI _actionButtonContainer;
     [SerializeField] private Button _actionButton;
     [SerializeField] private PopupTextUI _actionResultPopupUI;
-    private PopupTextUI _errorPopupUI;
+    [SerializeField] private PopupTextUI _errorPopupUI;
 
     [Header("VFX")]
-    [SerializeField] private int _GoodResultVFXPointsThreshold = 10000;
-    [SerializeField] private ParticleSystem _GoodResultVFX;
+    [SerializeField] private int _goodResultVFXPointsThreshold = 10000;
+    [SerializeField] private ParticleSystem _goodResultVFX;
+    [SerializeField] private Material _itemTextDefaultFontMaterial;
+    [SerializeField] private Material _itemTextMaxSpinSpeedFontMaterial;
 
-    [Header("Settings")]
+    [Header("Spin Settings")]
     [SerializeField, Range(MIN_SPEED, MAX_SPEED)] private float _accelerationStartSpeed = MIN_SPEED;
     [SerializeField, Range(MIN_SPEED, MAX_SPEED)] private float _accelerationEndSpeed = MAX_SPEED;
     [SerializeField, Range(MIN_ACCELERATION, MAX_ACCELERATION)] private float _accelerationRate = MAX_ACCELERATION;
     [SerializeField, Range(MIN_SPEED, MAX_SPEED)] private float _decelerationEndSpeed = MIN_SPEED;
     [SerializeField, Range(MIN_ACCELERATION, MAX_ACCELERATION)] private float _decelerationRate = MAX_ACCELERATION;
-    [SerializeField, Range(0, 10)] private float _itemStepDistanceInterval = .5f;
+    [SerializeField] private SpinAnimation _spinAnimation;
+    [Header("Spin Settings: Discrete")]
+    [SerializeField, Range(.1f, 10)] private float _itemDiscreteStepDistanceDelta = .5f; // Affects the frequency of the discrete scroll effect.
+    [Header("Spin Settings: continuous")]
+    [SerializeField, Range(.1f, 500)] private float _itemContinuousStepDistanceSpeed = 100f; // Affects the delta movement of the continuous scroll effect.
+    [SerializeField] private Vector3 _itemContinuousTopLocalOverflowPosition;
+    [SerializeField] private Vector3 _itemContinuousBottomLocalResetPosition;
+    [SerializeField] private Vector3 _itemContinuousCenterLocalPosition;
+    [SerializeField] private float _itemContinuousStopDistanceThreshold = 50f;
 
     [Header("Runtime")]
     [SerializeField] private int[] _itemValues;
@@ -96,6 +117,8 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
             driver.Initialize();
         }
 
+        ResetItemTextsFontMaterial(_itemTextDefaultFontMaterial);
+
         _actionButtonContainer.Initialize();
         _actionResultPopupUI.Initialize();
 
@@ -108,7 +131,7 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
         _itemValues = itemValues;
 
         _itemValuesIndexOfTopUIItem = 0;
-        ResetItemsTexts();
+        ResetItemTexts();
     }
 
     public override void Show(Action onDone = null) {
@@ -168,7 +191,7 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
         StartCoroutine(StopSpinAnimationRoutine(
             _actionResultPopupUI,
             value.ToString(),
-            value >= _GoodResultVFXPointsThreshold ? _GoodResultVFX : null
+            value >= _goodResultVFXPointsThreshold ? _goodResultVFX : null
         ));
     }
 
@@ -191,7 +214,6 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
         }
 
         yield return new WaitUntil(() => _state == State.SpinningEnded);
-
         foreach (SpinnerDriverUI spinDriver in _drivers) {
             spinDriver.StopAnimation();
         }
@@ -220,20 +242,11 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
     private void Update() {
         float delta = Time.deltaTime;
 
-        _currentDistance += delta * _currentSpeed;
+        ScrollDownItems(delta);
 
-        TryStepDownItemTexts();
-
-        ResetItemsTexts();
-
-        // IFDO: Based on _currentSpeed and min/max acceleration/deceleration
-        //       speeds, we could update the speed percentage in realtime,
-        //       instead of the current event based approach.
         foreach (SpinnerDriverUI spinDriver in _drivers) {
-            spinDriver.ProgressAnimation(Time.time);
+            spinDriver.TryProgressAnimation(Time.time);
         }
-
-        // IFDO: A dispatcher table / state pattern would be nice since I am overengineering anyway.
 
         switch (_state) {
             case State.SpinningStarted:
@@ -242,11 +255,12 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
                 if (_currentSpeed >= _accelerationEndSpeed) {
                     _currentSpeed = _accelerationEndSpeed;
 
+                    _state = State.SpinningAtMaxSpeed;
+
                     foreach (SpinnerDriverUI spinDriver in _drivers) {
                         spinDriver.SetSpeedPercentage(1);
                     }
-
-                    _state = State.SpinningAtMaxSpeed;
+                    ResetItemTextsFontMaterial(_itemTextMaxSpinSpeedFontMaterial);
                 }
                 break;
             case State.SpinningEnding:
@@ -256,10 +270,15 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
                     _currentSpeed = _decelerationEndSpeed;
 
                     _state = State.SpinningAtMinSpeedToCenterResult;
+
+                    ResetItemTextsFontMaterial(_itemTextDefaultFontMaterial);
+                    foreach (SpinnerDriverUI spinDriver in _drivers) {
+                        spinDriver.SetSpeedPercentage(.01f);
+                    }
                 }
                 break;
             case State.SpinningAtMaxSpeed:
-                // Let it spin.
+                // let it spin.
                 break;
             case State.SpinningAtMinSpeedToCenterResult:
                 if (IsResultAtCenterOrNotExists()) {
@@ -277,27 +296,69 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
         }
     }
 
-    private void TryStepDownItemTexts() {
-        if (_currentDistance - _lastItemStepDistance >= _itemStepDistanceInterval) {
-            if (_itemValuesIndexOfTopUIItem == _itemValues.Length - 1) {
-                _itemValuesIndexOfTopUIItem = 0;
-            } else {
-                ++_itemValuesIndexOfTopUIItem;
-            }
+    private void ScrollDownItems(float delta) {
+        _currentDistance += delta * _currentSpeed;
 
-            _lastItemStepDistance = _currentDistance;
+        float deltaDistance = _currentDistance - _lastItemStepDistance;
+
+        switch (_spinAnimation) {
+            case SpinAnimation.continuous:
+                Vector3 pos;
+                Vector3 deltaPos = Vector3.up * deltaDistance * _itemContinuousStepDistanceSpeed;
+                foreach (TMP_Text itemText in _itemTexts) {
+                    itemText.transform.localPosition += deltaPos;
+
+                    if (itemText.transform.localPosition.y > _itemContinuousTopLocalOverflowPosition.y) {
+                        ScrollDownTopItemIndex();
+
+                        Vector3 overflowOffset = Vector3.up * (itemText.transform.localPosition.y - _itemContinuousTopLocalOverflowPosition.y);
+
+                        itemText.transform.localPosition = _itemContinuousBottomLocalResetPosition + overflowOffset;
+                        itemText.text = GetItemValueAtIndexCircular(_itemValuesIndexOfTopUIItem + _itemTexts.Length - 1).ToString();
+                    }
+                }
+
+                _lastItemStepDistance = _currentDistance;
+                break;
+            case SpinAnimation.Discrete:
+            default:
+                if (deltaDistance >= _itemDiscreteStepDistanceDelta) {
+                    ScrollDownTopItemIndex();
+
+                    _lastItemStepDistance = _currentDistance;
+                }
+
+                ResetItemTexts();
+                break;
         }
     }
 
-    private void ResetItemsTexts() {
+    private void ResetItemTexts() {
         for (int i = 0; i < _itemTexts.Length; ++i) {
             _itemTexts[i].text = GetItemValueAtIndexCircular(_itemValuesIndexOfTopUIItem + i).ToString();
+        }
+    }
+
+    private void ResetItemTextsFontMaterial(Material fontMaterial) {
+        for (int i = 0; i < _itemTexts.Length; ++i) {
+            _itemTexts[i].fontMaterial = fontMaterial;
+        }
+    }
+
+    private void ScrollDownTopItemIndex() {
+        if (_itemValuesIndexOfTopUIItem == _itemValues.Length - 1) {
+            _itemValuesIndexOfTopUIItem = 0;
+        } else {
+            ++_itemValuesIndexOfTopUIItem;
         }
     }
 
     private int GetItemValueAtIndexCircular(int index) {
         if (index >= _itemValues.Length) {
             index -= _itemValues.Length;
+        }
+        else if (index < 0) {
+            index += _itemValues.Length;
         }
 
         return _itemValues[index];
@@ -309,11 +370,37 @@ public class SpinnerUI : CanvasGroupHideableUI, ISpinnerUI {
         }
 
         int midIndex = _itemTexts.Length / 2;
-        if (GetItemValueAtIndexCircular(_itemValuesIndexOfTopUIItem + midIndex) == _itemResult.Value) {
-            return true;
-        }
 
-        return false;
+        bool isAtCenterDiscrete = GetItemValueAtIndexCircular(_itemValuesIndexOfTopUIItem + midIndex) == _itemResult.Value;
+
+        switch (_spinAnimation) {
+            case SpinAnimation.Discrete:
+                return isAtCenterDiscrete;
+            case SpinAnimation.continuous:
+            default:
+                if (isAtCenterDiscrete) {
+                    float distanceFromCenter = Vector2.Distance(_itemContinuousCenterLocalPosition, _itemTexts[midIndex].transform.localPosition);
+
+                    Debug.Log("distanceFromCenter: " + distanceFromCenter);
+
+                    return distanceFromCenter < _itemContinuousStopDistanceThreshold;
+                }
+                return false;
+        }
+    }
+
+    [ContextMenu("Reset Continous Settings By UI")]
+    private void ResetContinousSettingsByUI() {
+        Vector3 itemTextScrollTopLocalPosition = _itemTexts.First().transform.localPosition;
+        Vector3 itemTextScrollBottomLocalPosition = _itemTexts.Last().transform.localPosition;
+
+        float itemTextHeight = (itemTextScrollTopLocalPosition.y - itemTextScrollBottomLocalPosition.y) / (_itemTexts.Length - 1);
+        Vector3 itemTextHeightOffset = Vector3.up * itemTextHeight;
+
+        _itemContinuousTopLocalOverflowPosition = itemTextScrollTopLocalPosition + itemTextHeightOffset;
+        _itemContinuousBottomLocalResetPosition = itemTextScrollBottomLocalPosition;
+        _itemContinuousCenterLocalPosition = Vector3.zero;
+        _itemContinuousStopDistanceThreshold = itemTextHeight;
     }
 
 }

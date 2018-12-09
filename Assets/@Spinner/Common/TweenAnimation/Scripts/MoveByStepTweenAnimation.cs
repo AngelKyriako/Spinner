@@ -3,7 +3,7 @@
 using DG.Tweening;
 
 [CreateAssetMenu(menuName = "Spinner/Tween Animation/Move By Step")]
-public class MoveByStepTweenAnimation : AbstractTweenAnimation {
+public class MoveByStepTweenAnimation : BaseTweenAnimation {
 
     [SerializeField] private Vector3 _step;
 

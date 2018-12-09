@@ -693,7 +693,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1619534906116710, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82, type: 2}
       propertyPath: m_Name
-      value: SpinnerUIItem (-2)
+      value: SpinnerUIItem (2)
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_havePropertiesChanged
@@ -755,8 +755,8 @@ MonoBehaviour:
   _virtualServerDelayInSeconds: 5
   _virtualServerError: 
   _virtualServerResult:
-    SpinnerValues: 64000000f4010000e80300001027000050c30000a0860100
-    SpinnerValue: 10000
+    SpinnerValues: 64000000f4010000e80300001027000050c30000a0860100581b000040420f0020a1070032000000
+    SpinnerValue: 50000
   _loadingUI: {fileID: 1266815697}
   _gameplayUI: {fileID: 1528147313}
   _errorPopupUI: {fileID: 604044326}
@@ -905,7 +905,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 512, y: 256}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &376687239
 MonoBehaviour:
@@ -929,7 +929,7 @@ CanvasGroup:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 376687237}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -1264,7 +1264,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 852478471}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5}
+  m_LocalPosition: {x: 0, y: 0, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 602832174}
@@ -1538,9 +1538,9 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1731108380}
   - {fileID: 1596448142}
   - {fileID: 1437856100}
+  - {fileID: 1731108380}
   m_Father: {fileID: 1940797556}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1923,6 +1923,36 @@ Prefab:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114323865844475286, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82,
+        type: 2}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 53b6ffd4ed246114b808ca320982b449, type: 2}
+    - target: {fileID: 114323865844475286, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82,
+        type: 2}
+      propertyPath: m_fontSize
+      value: 88.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114323865844475286, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82,
+        type: 2}
+      propertyPath: m_textInfo.characterCount
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114323865844475286, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82,
+        type: 2}
+      propertyPath: m_textInfo.wordCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114323865844475286, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82,
+        type: 2}
+      propertyPath: m_havePropertiesChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114323865844475286, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82,
+        type: 2}
+      propertyPath: m_isInputParsingRequired
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82, type: 2}
   m_IsPrefabAsset: 0
@@ -1965,7 +1995,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1041215906}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2105,7 +2135,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1619534906116710, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82, type: 2}
       propertyPath: m_Name
-      value: SpinnerUIItem (-1)
+      value: SpinnerUIItem (1)
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_havePropertiesChanged
@@ -2192,7 +2222,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 44.1
+  m_fontSize: 47.55
   m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2238,14 +2268,14 @@ MonoBehaviour:
     spaceCount: 3
     wordCount: 4
     linkCount: 0
-    lineCount: 2
+    lineCount: 1
     pageCount: 1
     materialCount: 1
   m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -2383,7 +2413,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1619534906116710, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82, type: 2}
       propertyPath: m_Name
-      value: SpinnerUIItem (1)
+      value: SpinnerUIItem (-1)
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_havePropertiesChanged
@@ -2502,7 +2532,7 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1528147312}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
@@ -2561,7 +2591,7 @@ Prefab:
     - target: {fileID: 224309531705953930, guid: a61ef3baa35a0fa4eacbde8531955d32,
         type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224309531705953930, guid: a61ef3baa35a0fa4eacbde8531955d32,
         type: 2}
@@ -2681,7 +2711,7 @@ Prefab:
     - target: {fileID: 224309531705953930, guid: a61ef3baa35a0fa4eacbde8531955d32,
         type: 2}
       propertyPath: m_RootOrder
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 224309531705953930, guid: a61ef3baa35a0fa4eacbde8531955d32,
         type: 2}
@@ -2743,6 +2773,16 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: c61a81fe8949dde4baec5f96154650d9,
         type: 3}
+    - target: {fileID: 114024912583019770, guid: a61ef3baa35a0fa4eacbde8531955d32,
+        type: 2}
+      propertyPath: _localRotationAnglesPong.z
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114024912583019770, guid: a61ef3baa35a0fa4eacbde8531955d32,
+        type: 2}
+      propertyPath: _localRotationAnglesPing.z
+      value: -3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a61ef3baa35a0fa4eacbde8531955d32, type: 2}
   m_IsPrefabAsset: 0
@@ -2856,7 +2896,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1619534906116710, guid: 257c1d3ab5ff5d3499bf8bfdb1b64e82, type: 2}
       propertyPath: m_Name
-      value: SpinnerUIItem (2)
+      value: SpinnerUIItem (-2)
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_havePropertiesChanged
@@ -2938,11 +2978,11 @@ MonoBehaviour:
   _spinEndedAnimation: {fileID: 11400000, guid: 3a098c5a95ba0c345b416d9d72d40ad6,
     type: 2}
   _itemTexts:
-  - {fileID: 1884387472}
-  - {fileID: 1491767440}
-  - {fileID: 1433271140}
-  - {fileID: 1440948438}
   - {fileID: 215259375}
+  - {fileID: 1440948438}
+  - {fileID: 1433271140}
+  - {fileID: 1491767440}
+  - {fileID: 1884387472}
   _isFrozenIndicator: {fileID: 374115175}
   _drivers:
   - {fileID: 1731108381}
@@ -2950,14 +2990,25 @@ MonoBehaviour:
   _actionButtonContainer: {fileID: 694312656}
   _actionButton: {fileID: 694312658}
   _actionResultPopupUI: {fileID: 376687239}
-  _GoodResultVFXPointsThreshold: 10000
-  _GoodResultVFX: {fileID: 1365351558}
+  _errorPopupUI: {fileID: 0}
+  _goodResultVFXPointsThreshold: 10000
+  _goodResultVFX: {fileID: 1365351558}
+  _itemTextDefaultFontMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385,
+    type: 2}
+  _itemTextMaxSpinSpeedFontMaterial: {fileID: 2100000, guid: 53b6ffd4ed246114b808ca320982b449,
+    type: 2}
   _accelerationStartSpeed: 1
   _accelerationEndSpeed: 10
-  _accelerationRate: 3
-  _decelerationEndSpeed: 1
-  _decelerationRate: 5
-  _itemStepDistanceInterval: 0.5
+  _accelerationRate: 5
+  _decelerationEndSpeed: 2
+  _decelerationRate: 3
+  _spinAnimation: 1
+  _itemDiscreteStepDistanceDelta: 0.5
+  _itemContinuousStepDistanceSpeed: 150
+  _itemContinuousTopLocalOverflowPosition: {x: 0, y: 360, z: 0}
+  _itemContinuousBottomLocalResetPosition: {x: 0, y: -240, z: 0}
+  _itemContinuousCenterLocalPosition: {x: 0, y: 0, z: 0}
+  _itemContinuousStopDistanceThreshold: 250
   _itemValues: 
   _state: 0
   _currentSpeed: 0
@@ -3056,7 +3107,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 150
+  m_fontSize: 88.3
   m_fontSizeBase: 120
   m_fontWeight: 400
   m_enableAutoSizing: 1

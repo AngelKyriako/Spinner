@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae938a2d1cce7f64ab46cc6d0e7b512b, type: 3}
   m_Name: SPINNER_POPUP_RESULT_SHOW_SCALE_DOWN_FAST
   m_EditorClassIdentifier: 
-  _durationInSeconds: 1
+  _durationInSeconds: 0.5
   _ease: 0
   _fromLocalScale: {x: 4, y: 4, z: 4}
   _untilLocalScale: {x: 2, y: 2, z: 2}

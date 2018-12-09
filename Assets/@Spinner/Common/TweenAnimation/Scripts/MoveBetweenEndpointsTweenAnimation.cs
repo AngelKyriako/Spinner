@@ -3,7 +3,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Spinner/Tween Animation/Move Between Endpoints")]
-public class MoveBetweenEndpointsTweenAnimation : AbstractTweenAnimation {
+public class MoveBetweenEndpointsTweenAnimation : BaseTweenAnimation {
 
     [SerializeField] private Vector3 _fromLocalPosition;
     [SerializeField] private Vector3 _untilLocaPosition;

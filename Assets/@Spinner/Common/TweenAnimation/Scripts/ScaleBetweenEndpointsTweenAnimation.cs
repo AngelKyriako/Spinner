@@ -3,7 +3,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Spinner/Tween Animation/Scale Between Endpoints")]
-public class ScaleBetweenEndpointsTweenAnimation : AbstractTweenAnimation {
+public class ScaleBetweenEndpointsTweenAnimation : BaseTweenAnimation {
 
     [SerializeField] private Vector3 _fromLocalScale = new Vector3(1f, 1f, 1f);
     [SerializeField] private Vector3 _untilLocalScale = new Vector3(1f, 1f, 1f);

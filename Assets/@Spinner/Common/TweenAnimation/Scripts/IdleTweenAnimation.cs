@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Spinner/Tween Animation/Idle")]
-public class IdleTweenAnimation : AbstractTweenAnimation {
+public class IdleTweenAnimation : BaseTweenAnimation {
 
     public override void Animate(MonoBehaviour routineInvocator, Transform transform, Action onDone = null) {
         routineInvocator.StartCoroutine(CallbackAfterSeconds(_durationInSeconds, onDone));

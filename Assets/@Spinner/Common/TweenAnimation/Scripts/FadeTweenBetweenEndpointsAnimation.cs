@@ -3,7 +3,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Spinner/Tween Animation/Fade Between Endpoints")]
-public class FadeTweenBetweenEndpointsAnimation : AbstractTweenAnimation {
+public class FadeTweenBetweenEndpointsAnimation : BaseTweenAnimation {
 
     [SerializeField] private float _fromAlpha;
     [SerializeField] private float _untilAlpha;

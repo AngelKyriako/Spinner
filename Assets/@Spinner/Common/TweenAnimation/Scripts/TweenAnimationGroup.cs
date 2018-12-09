@@ -3,7 +3,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Spinner/Tween Animation/Group")]
-public class TweenAnimationGroup : ScriptableObject, ITweenAnimation {
+public class TweenAnimationGroup : AbstractTweenAnimation, ITweenAnimation {
 
     public enum Type {
         Parallel,
@@ -14,11 +14,11 @@ public class TweenAnimationGroup : ScriptableObject, ITweenAnimation {
 
     [SerializeField] private AbstractTweenAnimation[] _tweenAnimations;
 
-    public void Animate(MonoBehaviour routineInvoker, CanvasGroup canvasGroup, Action onDone = null) {
+    public override void Animate(MonoBehaviour routineInvoker, CanvasGroup canvasGroup, Action onDone = null) {
         Animate(routineInvoker, null, canvasGroup, onDone);
     }
 
-    public void Animate(MonoBehaviour routineInvoker, Transform transform, Action onDone = null) {
+    public override void Animate(MonoBehaviour routineInvoker, Transform transform, Action onDone = null) {
         Animate(routineInvoker, transform, null, onDone);
     }
 

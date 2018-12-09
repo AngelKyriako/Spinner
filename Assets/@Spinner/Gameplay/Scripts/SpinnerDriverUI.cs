@@ -44,9 +44,14 @@ public class SpinnerDriverUI : MonoBehaviour {
         _isAtPingState = false;
 
         SetSpeedPercentage(speedPercentage);
+
+        enabled = true;
     }
 
-    public void ProgressAnimation(float timeInSeconds, float? speedPercentage = null) {
+    public void TryProgressAnimation(float timeInSeconds, float? speedPercentage = null) {
+        if (!enabled) {
+            return;
+        }
 
         if (speedPercentage.HasValue) {
             SetSpeedPercentage(speedPercentage.Value);
