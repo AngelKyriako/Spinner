@@ -16,7 +16,10 @@ Checkout the WebGL(wasm) demo [here](https://angelkyriako.github.io/Spinner).
 - A simple HTTP client.
 - Virtual server settings.
   - Allows to simulate of the server's results and delay in seconds
-- A powerful Animation system.
+- Custom Spinning animation
+  - Discrete: Scrolls block by block.
+  - Continuous: Scrolls in real time.
+- A powerful animation system.
   - Each Animation is a scriptable object stored on disk in a .asset file. That way they can be tweaked during play mode without losing their values.
   - Animation Groups contain multiple animations that may be run in parallel or sequentialy.
   - Animation Groups are also animations and therefore can be children of other Animation Groups.
